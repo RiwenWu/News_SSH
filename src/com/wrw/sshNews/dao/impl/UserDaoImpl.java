@@ -27,23 +27,16 @@ public class UserDaoImpl implements UserDao{
 
 	@Override
 	public boolean isUserExists(User u) {
-		Transaction tx = this.getCurrentSession().beginTransaction();
-		User u1 = null;
-		try {
-			String hql = "from User u where u.userName=? and u.userPwd=?" ;
-			Query query = this.getCurrentSession().createQuery(hql);
-			query.setParameter(0, u.getUserName());  
-	        query.setParameter(1, u.getUserPwd());
-	        u1 = (User) query.uniqueResult();
-	        List list = query.list();  
-	        if(list==null||list.size()==0){  
-	            return false;
-	        } 
-	        tx.commit();
-		} catch(Exception e){
-            if(null!=tx){tx.rollback();}
-            e.printStackTrace();
-        } 
+		String hql = "from User u where u.userName=? and u.userPwd=?" ;
+		Query query = this.getCurrentSession().createQuery(hql);
+		query.setParameter(0, u.getUserName());  
+	    query.setParameter(1, u.getUserPwd());
+	       
+	    List list = query.list();  
+	    if(list==null||list.size()==0){  
+	        return false;
+	    } 	
+	       
 		return true;
 	}
 
@@ -60,7 +53,6 @@ public class UserDaoImpl implements UserDao{
 	}
 
 	public void add(User u) {
-		Transaction tx = this.getCurrentSession().beginTransaction();
 		
 		//先判断用户名是否唯一
 		String hql = "from User u where u.userName=?";
@@ -68,16 +60,10 @@ public class UserDaoImpl implements UserDao{
 		query.setParameter(0, u.getUserName());
 		List list = query.list();  
 		if(list != null||list.size() > 0){  
-            throw new RuntimeException("用户名已存在");  
+            //this.getCurrentSession().close();
+            throw new RuntimeException("用户名已存在");
         }
-		
-		try {
-			this.getCurrentSession().save(u);
-			tx.commit();
-		} catch(Exception e){
-            if(null!=tx){tx.rollback();}
-            e.printStackTrace();
-        } 
+		this.getCurrentSession().save(u);
 	}
 
 

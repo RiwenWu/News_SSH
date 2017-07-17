@@ -33,7 +33,7 @@ public class testUerServiceImpl extends AbstractJUnit4SpringContextTests{
 	@Test
 	public void testLogin(){
 		User u1 = new User();
-		u1.setUserName("e");
+		u1.setUserName("ea");
 		u1.setUserPwd("f");
 		Boolean a = userService.login(u1);
 		
